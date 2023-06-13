@@ -232,7 +232,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       builder: (BuildContext context) {
         return const AlertDialog(
           title: Text("Please Wait"),
-          content: Text("Registration..."),
+          content: Text("Registration on progress..."),
         );
       },
     );

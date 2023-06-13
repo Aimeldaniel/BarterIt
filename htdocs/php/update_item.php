@@ -7,14 +7,17 @@ if (!isset($_POST)) {
 
 include_once("dbconnect.php");
 
-$name = $_POST['name'];
-$email = $_POST['email'];
-$password = sha1($_POST['password']);
-$otp = rand(10000,99999);
+$itemid = $_POST['item_id'];
+$item_name = $_POST['item_name'];
+$item_desc = addslashes($_POST['item_desc']);
+$item_price = $_POST['item_price'];
+$item_qty = $_POST['item_qty'];
+$item_type = $_POST['item_type'];
 
-$sqlinsert = "INSERT INTO `user`( `user_email`, `user_name`, `user_password`, `otp`) VALUES ('$email','$name','$password','$otp');";
 
-if ($conn->query($sqlinsert) === TRUE) {
+$sqlupdate = "UPDATE `tbl_items` SET `item_name`='$item_name',`item_type`='$item_type',`item_desc`='$item_desc',`item_price`='$item_price',`item_qty`='$item_qty' WHERE `item_id` = '$itemid'";
+
+if ($conn->query($sqlupdate) === TRUE) {
 	$response = array('status' => 'success', 'data' => null);
     sendJsonResponse($response);
 }else{

@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           validator: (val) => val!.isEmpty ||
                                   !val.contains("@") ||
                                   !val.contains(".")
-                              ? "Enter a valid email"
+                              ? "enter a valid email"
                               : null,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
@@ -85,8 +85,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ))),
                       TextFormField(
                           controller: _passEditingController,
-                          validator: (val) => val!.isEmpty || (val.length < 7)
-                              ? "password must be longer than 7"
+                          validator: (val) => val!.isEmpty || (val.length < 5)
+                              ? "password must be longer than 5"
                               : null,
                           obscureText: true,
                           decoration: const InputDecoration(
@@ -177,22 +177,25 @@ class _LoginScreenState extends State<LoginScreen> {
   void onLogin() {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Please check your input")));
+          .showSnackBar(const SnackBar(content: Text("Check your input")));
       return;
     }
     String email = _emailEditingController.text;
     String pass = _passEditingController.text;
-    print(email);
     print(pass);
     try {
       http.post(Uri.parse("${MyConfig().SERVER}/barterlt/php/login_user.php"),
           body: {
             "email": email,
-            "password": pass,
+            "pass": pass,
           }).then((response) {
         print(response.body);
         if (response.statusCode == 200) {
-          var jsondata = jsonDecode(response.body);
+          var responseBody = response.body;
+        if (responseBody.startsWith('success')) {
+          responseBody = responseBody.substring(7);
+        }
+        var jsondata = jsonDecode(responseBody);
           if (jsondata['status'] == 'success') {
             User user = User.fromJson(jsondata['data']);
             print(user.name);
@@ -203,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (content) => MainScreen(
-                         
+                          user: user,
                         )));
           } else {
             ScaffoldMessenger.of(context)
@@ -237,14 +240,14 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
       await prefs.setString('email', email);
-      await prefs.setString('pass', password);
+      await prefs.setString('password', password);
       await prefs.setBool("checkbox", value);
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Preferences Stored")));
     } else {
       //delete preference
       await prefs.setString('email', '');
-      await prefs.setString('pass', '');
+      await prefs.setString('password', '');
       await prefs.setBool('checkbox', false);
       setState(() {
         _emailEditingController.text = '';

@@ -18,16 +18,15 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // checkAndLogin();
+    checkAndLogin();
     //loadPref();
-    Timer(
-        const Duration(seconds: 3),
-        () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (content) =>  MainScreen())));
+    // Timer(
+    //     const Duration(seconds: 3),
+    //     () => Navigator.pushReplacement(context,
+    //         MaterialPageRoute(builder: (content) =>  MainScreen())));
   }
 
-  @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
       alignment: Alignment.center,
@@ -35,21 +34,21 @@ class SplashScreenState extends State<SplashScreen> {
         Container(
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/Mainscreen.png'),
+                    image: AssetImage('assets/images/Mainscreen.png'),
                     fit: BoxFit.cover))),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-              // /Text(
-              //   "Barterlt",
-              //   style: TextStyle(
-              //       fontSize: 48,
-              //       fontWeight: FontWeight.bold,
-              //       color: Colors.white),
-              // ),
-              // //CircularProgressIndicator(),
+               Text(
+                 "Barterlt",
+                 style: TextStyle(
+                     fontSize: 48,
+                     fontWeight: FontWeight.bold,
+                     color: Colors.white),
+              ),
+               //CircularProgressIndicator(),
               Text(
                 "Version 0.1",
                 style: TextStyle(
@@ -64,59 +63,61 @@ class SplashScreenState extends State<SplashScreen> {
     ));
   }
 
-  // checkAndLogin() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String email = (prefs.getString('email')) ?? '';
-  //   String password = (prefs.getString('pass')) ?? '';
-  //   bool ischeck = (prefs.getBool('checkbox')) ?? false;
-  //   late User user;
-  //   if (ischeck) {
-  //     try {
-  //       http.post(
-  //           Uri.parse("${MyConfig().SERVER}/barterlt/php/login_user.php"),
-  //           body: {"email": email, "password": password}).then((response) {
-  //         if (response.statusCode == 200) {
-  //           var jsondata = jsonDecode(response.body);
-  //           user = User.fromJson(jsondata['data']);
-  //           Timer(
-  //               const Duration(seconds: 3),
-  //               () => Navigator.pushReplacement(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                       builder: (content) => MainScreen(user: user))));
-  //         } else {
-  //           user = User(
-  //               id: "na",
-  //               name: "na",
-  //               email: "na",               
-  //               datereg: "na",
-  //               password: "na",
-  //               otp: "na");
-  //           Timer(
-  //               const Duration(seconds: 3),
-  //               () => Navigator.pushReplacement(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                       builder: (content) => MainScreen(user: user))));
-  //         }
-  //       }).timeout(const Duration(seconds: 5), onTimeout: () {
-  //         // Time has run out, do what you wanted to do.
-  //       });
-  //     } on TimeoutException catch (_) {
-  //       print("Time out");
-  //     }
-  //   } else {
-  //     user = User(
-  //         id: "na",
-  //         name: "na",
-  //         email: "na",
-  //         datereg: "na",
-  //         password: "na",
-  //         otp: "na");
-  //     Timer(
-  //         const Duration(seconds: 3),
-  //         () => Navigator.pushReplacement(context,
-  //             MaterialPageRoute(builder: (content) => MainScreen(user: user))));
-  //   }
-  // }
+   checkAndLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String email = (prefs.getString('email')) ?? '';
+    String password = (prefs.getString('pass')) ?? '';
+    bool ischeck = (prefs.getBool('checkbox')) ?? false;
+    late User user;
+    if (ischeck) {
+      try {
+        http.post(
+            Uri.parse("${MyConfig().SERVER}/barterlt/php/login_user.php"),
+            body: {"email": email, "password": password}).then((response) {
+          if (response.statusCode == 200) {
+            var jsondata = jsonDecode(response.body);
+            user = User.fromJson(jsondata['data']);
+            Timer(
+                const Duration(seconds: 3),
+                () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => MainScreen(user: user))));
+          } else {
+            user = User(
+                id: "na",
+                name: "na",
+                email: "na",
+                phone: "na",
+                datereg: "na",
+                password: "na",
+                otp: "na");
+            Timer(
+                const Duration(seconds: 3),
+                () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => MainScreen(user: user))));
+          }
+        }).timeout(const Duration(seconds: 5), onTimeout: () {
+          // Time has run out, do what you wanted to do.
+        });
+      } on TimeoutException catch (_) {
+        print("Time out");
+      }
+    } else {
+      user = User(
+          id: "na",
+          name: "na",
+          email: "na",
+          phone: "na",
+          datereg: "na",
+          password: "na",
+          otp: "na");
+      Timer(
+          const Duration(seconds: 3),
+          () => Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (content) => MainScreen(user: user))));
+    }
+  }
 }

@@ -51,7 +51,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                   margin: EdgeInsets.all(4),
                   width: screenWidth * 0.4,
                   child: Image.asset(
-                    "assets/images/profile.png",
+                    "assets/profileicon.png",
                   ),
                 ),
                 Expanded(
