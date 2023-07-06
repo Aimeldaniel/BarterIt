@@ -10,7 +10,7 @@ $pass = sha1($_POST['pass']);
 
 include_once("dbconnect.php");
 
-$sqllogin = "SELECT * FROM `tbl_users` WHERE user_email = '$email' AND password = '$pass'";
+$sqllogin = "SELECT * FROM `tbl_users` WHERE user_email = '$email' AND user_password = '$pass'";
 $result = $conn->query($sqllogin);
 
 if ($result->num_rows > 0) {
@@ -20,9 +20,9 @@ if ($result->num_rows > 0) {
 		$userarray['email'] = $row['user_email'];
 		$userarray['name'] = $row['user_name'];
 		$userarray['phone'] = $row['user_phone'];
-		$userarray['password'] = $_POST['pass'];
+		$userarray['password'] = $_POST['user_password'];
 		$userarray['otp'] = $row['user_otp'];
-		$userarray['datereg'] = $row['user_datereg'];
+		$userarray['datereg'] = $row['user_date'];
 		$response = array('status' => 'success', 'data' => $userarray);
 		sendJsonResponse($response);
 	}

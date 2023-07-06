@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:barterlt/myconfig.dart';
 
-class RegistrationScreen extends StatefulWidget {
+/*class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
+
+  @override
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
+}*/
+
+class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
@@ -14,6 +21,7 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _nameEditingController = TextEditingController();
   final TextEditingController _emailditingController = TextEditingController();
+  final TextEditingController _phonelditingController = TextEditingController();
   final TextEditingController _passEditingController = TextEditingController();
   final TextEditingController _pass2EditingController = TextEditingController();
   bool _isChecked = false;
@@ -57,7 +65,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                           controller: _nameEditingController,
                           validator: (val) => val!.isEmpty || (val.length < 5)
-                              ? "name must be longer than 5"
+                              ? "Name must be longer than 5 letters."
                               : null,
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
@@ -66,13 +74,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               icon: Icon(Icons.person),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(width: 2.0),
-                              ))),                     
+                              ))),
+                      TextFormField(
+                          keyboardType: TextInputType.phone,
+                          validator: (val) => val!.isEmpty || (val.length < 10)
+                              ? "Phone must be longer or equal than 10 numbers."
+                              : null,
+                          controller: _phonelditingController,
+                          decoration: const InputDecoration(
+                              labelText: 'Phone',
+                              labelStyle: TextStyle(),
+                              icon: Icon(Icons.phone),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 2.0),
+                              ))),
                       TextFormField(
                           controller: _emailditingController,
                           validator: (val) => val!.isEmpty ||
                                   !val.contains("@") ||
                                   !val.contains(".")
-                              ? "enter a valid email"
+                              ? "Please enter a valid email."
                               : null,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
@@ -85,7 +106,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                           controller: _passEditingController,
                           validator: (val) => val!.isEmpty || (val.length < 5)
-                              ? "password must be longer than 5"
+                              ? "Password must be longer than 5 characters."
                               : null,
                           obscureText: true,
                           decoration: const InputDecoration(
@@ -98,7 +119,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                           controller: _pass2EditingController,
                           validator: (val) => val!.isEmpty || (val.length < 5)
-                              ? "password must be longer than 5"
+                              ? "Password must be longer than 5 characters."
                               : null,
                           obscureText: true,
                           decoration: const InputDecoration(
@@ -232,40 +253,48 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       builder: (BuildContext context) {
         return const AlertDialog(
           title: Text("Please Wait"),
-          content: Text("Registration on progress..."),
+          content: Text("Registration..."),
         );
       },
     );
     String name = _nameEditingController.text;
     String email = _emailditingController.text;
-    String passw = _passEditingController.text;
+    String phone = _phonelditingController.text;
+    String passa = _passEditingController.text;
 
-    http.post(Uri.parse("${MyConfig().SERVER}/barterlt/php/regis_user.php"),
-        body: {
-          "name": name,
-          "email": email,
-          "password": passw,
-        }).then((response) {
-       print(response.body);
+    http
+    .post(Uri.parse("${MyConfig().SERVER}/barterlt/php/register_user.php"), body: {
+      "name": name,
+      "email": email,
+      "phone": phone,
+      "password": passa,
+    })
+    .then((response) {
+      print(response.body);
       if (response.statusCode == 200) {
-        var jsondata = jsonDecode(response.body);
+        var responseBody = response.body;
+        if (responseBody.startsWith('success')) {
+          responseBody = responseBody.substring(7);
+        }
+        var jsondata = jsonDecode(responseBody);
         if (jsondata['status'] == 'success') {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Registration Success")));
+            const SnackBar(content: Text("Registration Success")),
+          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Registration Failed")));
+            const SnackBar(content: Text("Registration Failed")),
+          );
         }
         Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Registration Failed")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration Failed")),
+        );
         Navigator.pop(context);
       }
     });
   }
 
   void _goLogin() {}
-}
+} 

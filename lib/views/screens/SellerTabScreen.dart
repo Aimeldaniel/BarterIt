@@ -52,84 +52,84 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
         title: Text(maintitle),
       ),
       body: RefreshIndicator(
-  onRefresh: loadsellerItems,
-  child: itemList.isEmpty
-      ? const Center(
-          child: Text("No Data"),
-        )
-      : Column(
-          children: [
-            Container(
-              height: 24,
-              color: Theme.of(context).colorScheme.primary,
-              alignment: Alignment.center,
-              child: Text(
-                "${itemList.length} Items Found",
-                style: const TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: List.generate(
-                    itemList.length,
-                    (index) {
-                      return Card(
-                        child: InkWell(
-                          onLongPress: () {
-                            onDeleteDialog(index);
-                          },
-                          onTap: () async {
-                            Item singleitem = Item.fromJson(itemList[index].toJson());
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (content) => EditItemScreen(
-                                  user: widget.user,
-                                  useritem: singleitem,
+        onRefresh: loadsellerItems,
+        child: itemList.isEmpty
+            ? const Center(
+                child: Text("No Data"),
+              )
+            : Column(
+                children: [
+                  Container(
+                    height: 24,
+                    color: Theme.of(context).colorScheme.primary,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "${itemList.length} Items Found",
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: List.generate(
+                          itemList.length,
+                          (index) {
+                            return Card(
+                              child: InkWell(
+                                onLongPress: () {
+                                  onDeleteDialog(index);
+                                },
+                                onTap: () async {
+                                  Item singleitem =
+                                      Item.fromJson(itemList[index].toJson());
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (content) => EditItemScreen(
+                                        user: widget.user,
+                                        useritem: singleitem,
+                                      ),
+                                    ),
+                                  );
+                                  loadsellerItems();
+                                },
+                                child: Column(
+                                  children: [
+                                    for (int i = 1; i <= 3; i++)
+                                      CachedNetworkImage(
+                                        width: screenWidth,
+                                        fit: BoxFit.cover,
+                                        imageUrl:
+                                            "${MyConfig().SERVER}/barterlt/assets/catches/${itemList[index].itemId}_$i.png",
+                                        placeholder: (context, url) =>
+                                            const LinearProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
+                                    Text(
+                                      itemList[index].itemName.toString(),
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
+                                    Text(
+                                      "RM ${double.parse(itemList[index].itemPrice.toString()).toStringAsFixed(2)}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    Text(
+                                      "${itemList[index].itemQty} available",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
-                            loadsellerItems();
                           },
-                          child: Column(
-                            children: [
-                              for (int i = 1; i <= 3; i++)
-                                CachedNetworkImage(
-                                  width: screenWidth,
-                                  fit: BoxFit.cover,
-                                  imageUrl:
-                                      "${MyConfig().SERVER}/barterlt/assets/images/${itemList[index].itemId}_$i.png",
-                                  placeholder: (context, url) =>
-                                      const LinearProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
-                              Text(
-                                itemList[index].itemName.toString(),
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                              Text(
-                                "RM ${double.parse(itemList[index].itemPrice.toString()).toStringAsFixed(2)}",
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              Text(
-                                "${itemList[index].itemQty} available",
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                            ],
-                          ),
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
-),
-
+      ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             if (widget.user.id != "na") {
@@ -160,7 +160,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
       return;
     }
 
-    http.post(Uri.parse("${MyConfig().SERVER}/barterlt/php/load_items.php"),
+    http.post(Uri.parse("${MyConfig().SERVER}/barterlt/php/load_item.php"),
         body: {"userid": widget.user.id}).then((response) {
       //print(response.body);
       log(response.body);
@@ -171,7 +171,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
           responseBody = responseBody.substring(7);
         }
         var jsondata = jsonDecode(responseBody);
-        if (jsondata['status'] == "success") {
+        if (jsondata['status'] == 'success') {
           var extractdata = jsondata['data'];
           extractdata['items'].forEach((v) {
             itemList.add(Item.fromJson(v));
@@ -229,8 +229,12 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
       print(response.body);
       //itemList.clear();
       if (response.statusCode == 200) {
-        var jsondata = jsonDecode(response.body);
-        if (jsondata['status'] == "success") {
+        var responseBody = response.body;
+        if (responseBody.startsWith('success')) {
+          responseBody = responseBody.substring(7);
+        }
+        var jsondata = jsonDecode(responseBody);
+        if (jsondata['status'] == 'success') {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Delete Success")));
           loadsellerItems();

@@ -36,21 +36,20 @@ class _NewItemScreenState extends State<NewItemScreen> {
       TextEditingController();
   final TextEditingController _prlocalEditingController =
       TextEditingController();
-  String selectedType = "Women Fashion";
+  String selectedType = "Women's Fashion";
   List<String> itemlist = [
-    "Computer & Mobile",
-    "Women Fashion",
-    "Men Fashion",
+    "Women's Fashion",
+    "Men's Fashion",
     "Health & Beauty",
-    "Home & Living",
+    "Furniture Home Living",
     "Baby & Toys",
     "Home Appliances",
     "Automotive",
-    "Sports & Outdoors",
+    "Sports Equipment",
     "Hobbies",
     "Gaming & Consoles",
     "Travel & Luggage",
-    "Cameras & Drones",
+    "Photography",
     "Others",
   ];
   late Position _currentPosition;
@@ -307,7 +306,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
       uiSettings: [
         AndroidUiSettings(
             toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
+            toolbarColor: Colors.grey,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.ratio3x2,
             lockAspectRatio: true),
