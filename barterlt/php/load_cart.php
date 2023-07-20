@@ -1,17 +1,8 @@
 <?php
-if (!isset($_POST)) {
-    $response = array('status' => 'failed', 'data' => null);
-    sendJsonResponse($response);
-    die();
-}
-
-include_once("dbconnect.php");
-//SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate FROM Orders INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
-
-
 if (isset($_POST['userid'])){
 	$userid = $_POST['userid'];	
 	$sqlcart = "SELECT * FROM `tbl_carts` INNER JOIN `tbl_item` ON tbl_carts.item_id = tbl_item.item_id WHERE tbl_carts.user_id = '$userid'";
+	$sqlcart = "SELECT * FROM `tbl_carts` INNER JOIN `tbl_items` ON tbl_carts.item_id = tbl_items.item_id WHERE tbl_carts.user_id = '$userid'";
 }
 
 $result = $conn->query($sqlcart);
@@ -35,7 +26,7 @@ if ($result->num_rows > 0) {
     $response = array('status' => 'success', 'data' => $cartitems);
     sendJsonResponse($response);
 }else{
-     $response = array('status' => 'failed', 'data' => null);
+    $response = array('status' => 'failed', 'data' => null);
     sendJsonResponse($response);
 }
 function sendJsonResponse($sentArray)
