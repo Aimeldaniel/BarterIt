@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:barterlt/models/user.dart';
 import 'package:barterlt/myconfig.dart';
-import 'package:barterlt/views/screens/registerationscreen.dart';
+import 'package:barterlt/views/screens/shared/registerationscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'mainscreen.dart';
@@ -192,10 +192,10 @@ class _LoginScreenState extends State<LoginScreen> {
         print(response.body);
         if (response.statusCode == 200) {
           var responseBody = response.body;
-        if (responseBody.startsWith('success')) {
-          responseBody = responseBody.substring(7);
-        }
-        var jsondata = jsonDecode(responseBody);
+          if (responseBody.startsWith('success')) {
+            responseBody = responseBody.substring(7);
+          }
+          var jsondata = jsonDecode(responseBody);
           if (jsondata['status'] == 'success') {
             User user = User.fromJson(jsondata['data']);
             print(user.name);

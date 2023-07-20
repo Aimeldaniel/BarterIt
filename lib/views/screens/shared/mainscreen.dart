@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:barterlt/views/screens/ProfileTabScreen.dart';
-import 'package:barterlt/views/screens/buyertabscreen.dart';
+import 'package:barterlt/views/screens/shared/ProfileTabScreen.dart';
+import 'package:barterlt/views/screens/buyer/buyertabscreen.dart';
 
-import '../../models/user.dart';
-import 'SellerTabScreen.dart';
-import 'buyertabscreen.dart';
+import '../../../models/user.dart';
+import '../seller/SellerTabScreen.dart';
 
 //for buyer screen
 
@@ -45,7 +44,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       body: tabchildren[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
           onTap: onTabTapped,
@@ -61,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
                 icon: Icon(
                   Icons.store_mall_directory,
                 ),
-                label: "Seller"),    
+                label: "Seller"),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.person,

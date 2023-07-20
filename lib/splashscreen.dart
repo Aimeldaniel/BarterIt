@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:barterlt/myconfig.dart';
-import 'package:barterlt/views/screens/mainscreen.dart';
+import 'package:barterlt/views/screens/shared/mainscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'models/user.dart';
@@ -26,7 +26,7 @@ class SplashScreenState extends State<SplashScreen> {
     //         MaterialPageRoute(builder: (content) =>  MainScreen())));
   }
 
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
       alignment: Alignment.center,
@@ -41,14 +41,14 @@ class SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-               Text(
-                 "Barterlt",
-                 style: TextStyle(
-                     fontSize: 48,
-                     fontWeight: FontWeight.bold,
-                     color: Colors.white),
+              Text(
+                "Barterlt",
+                style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
-               //CircularProgressIndicator(),
+              //CircularProgressIndicator(),
               Text(
                 "Version 0.1",
                 style: TextStyle(
@@ -63,7 +63,7 @@ class SplashScreenState extends State<SplashScreen> {
     ));
   }
 
-   checkAndLogin() async {
+  checkAndLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String email = (prefs.getString('email')) ?? '';
     String password = (prefs.getString('pass')) ?? '';
@@ -71,8 +71,7 @@ class SplashScreenState extends State<SplashScreen> {
     late User user;
     if (ischeck) {
       try {
-        http.post(
-            Uri.parse("${MyConfig().SERVER}/barterlt/php/login_user.php"),
+        http.post(Uri.parse("${MyConfig().SERVER}/barterlt/php/login_user.php"),
             body: {"email": email, "password": password}).then((response) {
           if (response.statusCode == 200) {
             var jsondata = jsonDecode(response.body);
